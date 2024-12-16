@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:library_project/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:library_project/features/library_management/presentation/pages/detail_page.dart';
+import 'package:library_project/features/profile/presentation/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -45,7 +46,14 @@ class _HomePageState extends State<HomePage> {
           CircleAvatar(
             backgroundColor: Colors.grey[350],
             radius: 20,
-            child: const Icon(Icons.person),
+            child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ProfilePage()));
+                },
+                icon: const Icon(Icons.person)),
           ),
           const SizedBox(
             width: 10,
