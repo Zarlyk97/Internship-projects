@@ -6,6 +6,7 @@ class BookRepositoryImpl implements BookRepository {
   final FirebaseFirestore firestore;
 
   BookRepositoryImpl({required this.firestore});
+
   @override
   Future<List<BookModel>> fetchBooks() async {
     final snapshot = await firestore.collection('books').get();
