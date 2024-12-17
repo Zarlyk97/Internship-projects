@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:library_project/features/library_management/domain/entities/book_model.dart';
 
 class DetailPage extends StatelessWidget {
+  final String images;
   final Book book;
   const DetailPage({
     super.key,
+    required this.images,
     required this.book,
   });
 
@@ -22,15 +24,15 @@ class DetailPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ClipRRect(
-            //   borderRadius: BorderRadius.circular(25),
-            //   child: Image.asset(
-            //     image.toString(),
-            //     height: 450,
-            //     width: double.infinity,
-            //     fit: BoxFit.cover,
-            //   ),
-            // ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(25),
+              child: Image.asset(
+                images.toString(),
+                height: 450,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
             const SizedBox(
               height: 20,
             ),

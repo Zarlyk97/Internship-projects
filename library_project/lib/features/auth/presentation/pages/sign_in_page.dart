@@ -26,7 +26,7 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       bottomNavigationBar: _signUpText(),
       appBar: AppBar(
-        title: const Text('Library'),
+        title: const Text('Библиотека'),
         centerTitle: true,
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
@@ -73,7 +73,7 @@ class _SignInPageState extends State<SignInPage> {
                     onPressed: () async {
                       final email = _email.text.trim();
                       final password = _password.text.trim();
-                      context.read<AuthCubit>().login(email, password);
+                      await context.read<AuthCubit>().login(email, password);
                     },
                   ),
                 ],

@@ -83,16 +83,6 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 10,
             ),
-            const Text(
-              'Genre Title',
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
             _bookWidget(),
           ],
         ),
@@ -102,42 +92,61 @@ class _HomePageState extends State<HomePage> {
 
 ////////////////Genre Widget
   Widget _genreWidget() {
-    return SizedBox(
-      height: 50,
-      child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, indext) {
-            return GestureDetector(
-              onTap: () => onTabTapped(indext),
-              child: SizedBox(
-                height: 25,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: _currentIndex == indext
-                          ? Colors.black54
-                          : Colors.grey[350]),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                    child: Center(
-                      child: Text(
-                        'Популярные',
-                        style: TextStyle(
-                            color: _currentIndex == indext
-                                ? Colors.white
-                                : Colors.black),
+    return BlocBuilder<BookCubit, BookState>(
+      builder: (context, state) {
+        if (state is BookStateLoading) {
+        } else if (state is BookStateFailure) {
+          return const Text('Error: Somethng went wrong :) ');
+        } else if (state is BookStateLoaded) {
+          books = state.books;
+        }
+        return SizedBox(
+          height: 50,
+          child: ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                final genres = books[index];
+
+                return GestureDetector(
+                  onTap: () {
+                    onTabTapped(index);
+                    // if (index == 0) {
+                    //   context.read<BookCubit>().loadBooks();
+                    // } else {
+                    //   context.read<BookCubit>().loadBooks();
+                    // }
+                  },
+                  child: SizedBox(
+                    height: 25,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: _currentIndex == index
+                              ? Colors.black54
+                              : Colors.grey[350]),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                        child: Center(
+                          child: Text(
+                            genres.genre,
+                            style: TextStyle(
+                                color: _currentIndex == index
+                                    ? Colors.white
+                                    : Colors.black),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            );
-          },
-          separatorBuilder: (context, index) => const SizedBox(
-                width: 10,
-              ),
-          itemCount: 10),
+                );
+              },
+              separatorBuilder: (context, index) => const SizedBox(
+                    width: 10,
+                  ),
+              itemCount: books.length),
+        );
+      },
     );
   }
 
@@ -150,7 +159,6 @@ class _HomePageState extends State<HomePage> {
           return const Center(
             child: CircularProgressIndicator(),
           );
-          // ignore: unnecessary_null_comparison
         } else if (state is BookStateFailure) {
           return const Text('Error: Somethng went wrong :) ');
         } else if (state is BookStateLoaded) {
@@ -160,20 +168,24 @@ class _HomePageState extends State<HomePage> {
           child: GridView.builder(
             scrollDirection: Axis.vertical,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisExtent: 250,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10),
+              crossAxisCount: 2,
+              mainAxisExtent: 330,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
             itemCount: books.length,
             itemBuilder: (context, index) {
               final book = books[index];
               return GestureDetector(
                 onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => DetailPage(
-                              book: books[index],
-                            ))),
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailPage(
+                      images: bookimages[index].image,
+                      book: books[index],
+                    ),
+                  ),
+                ),
                 child: SizedBox(
                   child: DecoratedBox(
                     decoration: BoxDecoration(
@@ -190,7 +202,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(15),
                               child: Image.asset(
                                 bookimages[index].image,
-                                height: 130,
+                                height: 220,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
                               ),
@@ -199,52 +211,74 @@ class _HomePageState extends State<HomePage> {
                               bottom: 1,
                               left: 3,
                               child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(50)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3),
-                                    child: Text(book.copies.toString()),
-                                  )),
-                            )
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(50),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Text(
+                                    "${book.copies} шт",
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
                         Padding(
-                          padding: const EdgeInsets.only(right: 5, left: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                book.title,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 12),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  book.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
-                              Text(
-                                book.author,
-                                style: const TextStyle(
+                              const SizedBox(height: 5),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  book.author,
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 10,
-                                    color: Colors.grey),
+                                    color: Colors.grey,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
+                              const SizedBox(height: 5),
                               ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      minimumSize: const Size(40, 25),
-                                      backgroundColor: Colors.blue),
-                                  onPressed: () {},
-                                  child: const Center(
-                                    child: Text(
-                                      'Арендa',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  )),
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(double.infinity, 25),
+                                  backgroundColor: Colors.blue,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                ),
+                                onPressed: () {},
+                                child: const Text(
+                                  'Аренда',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

@@ -12,11 +12,14 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this.loginUsecase, this.registerUsecase) : super(AuthInitial());
 
   //////////////  register logic
-  Future<void> register(String fullName, String email, String password) async {
+  Future<void> register(String email, String password) async {
     try {
       emit(AuthLoading());
 
-      final user = await registerUsecase.call(email, password, fullName);
+      final user = await registerUsecase.call(
+        email,
+        password,
+      );
       emit(AuthSuccess(userEntity: user));
     } catch (e) {
       emit(AuthError(messege: 'Error ${e.toString()}'));

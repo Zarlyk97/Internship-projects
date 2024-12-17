@@ -58,7 +58,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     _registerText(),
                     const SizedBox(height: 50),
-                    _fullNameField(),
+                    // _fullNameField(),
                     const SizedBox(height: 20),
                     _enterEmailField(),
                     const SizedBox(height: 20),
@@ -70,7 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         backgroundColor: Colors.green,
                       ),
                       onPressed: () async {
-                        final fullName = _fullName.text.trim();
+                        // final fullName = _fullName.text.trim();
                         final email = _email.text.trim();
                         final password = _password.text.trim();
 
@@ -82,9 +82,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           return;
                         }
 
-                        context
-                            .read<AuthCubit>()
-                            .register(email, password, fullName);
+                        context.read<AuthCubit>().register(email, password);
                       },
                       child: const Text(
                         'Register',
@@ -116,17 +114,17 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget _fullNameField() {
-    return TextField(
-      controller: _fullName,
-      decoration: const InputDecoration(
-        contentPadding: EdgeInsets.only(left: 20),
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20))),
-        hintText: 'Full Name',
-      ),
-    );
-  }
+  // Widget _fullNameField() {
+  //   return TextField(
+  //     controller: _fullName,
+  //     decoration: const InputDecoration(
+  //       contentPadding: EdgeInsets.only(left: 20),
+  //       border: OutlineInputBorder(
+  //           borderRadius: BorderRadius.all(Radius.circular(20))),
+  //       hintText: 'Full Name',
+  //     ),
+  //   );
+  // }
 
   Widget _enterEmailField() {
     return TextField(

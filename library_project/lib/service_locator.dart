@@ -22,7 +22,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUsecase(sl<AuthRepository>()));
   sl.registerLazySingleton(() => RegisterUsecase(sl<AuthRepository>()));
 
-  sl.registerFactory(() => BookCubit(sl()));
+  sl.registerFactory(() => BookCubit(sl(), sl()));
   sl.registerLazySingleton<BookRepository>(
       () => BookRepositoryImpl(firestore: sl()));
   sl.registerLazySingleton(() => FetchBookUsecase(sl()));

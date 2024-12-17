@@ -9,12 +9,11 @@ class BookModel extends Book {
     required super.copies,
   });
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
-        // id: json['id'],
         title: json['title'],
         author: json['author'],
         genre: json['genre'],
         copies:
-            json['copies'] is String ? int.tryParse(json['copies']) ?? 0 : 0,
+            json['copies'] is String ? int.tryParse(json['copies']) ?? 1 : 5,
       );
   tojson() => {
         'id': id,
