@@ -12,16 +12,24 @@ class FirebaseAuthRepository implements AuthRepository {
   });
   @override
   Future<User> login(String email, String password) async {
-    final credential = await firebaseAuth.signInWithEmailAndPassword(
-        email: email, password: password);
-    return User(id: credential.user!.uid, email: credential.user!.email!);
+    try {
+      final credential = await firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return User(id: credential.user!.uid, email: credential.user!.email!);
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   @override
   Future<User> register(String email, String password, String fullName) async {
-    final credetial = await firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password);
-    return User(id: credetial.user!.uid, email: credetial.user!.email!);
+    try {
+      final credetial = await firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return User(id: credetial.user!.uid, email: credetial.user!.email!);
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   @override

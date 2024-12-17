@@ -4,17 +4,15 @@ import 'package:library_project/features/library_management/presentation/cubit/b
 
 class BookCubit extends Cubit<BookState> {
   final FetchBookUsecase fetchBooksUseCase;
-  BookCubit(this.fetchBooksUseCase, super.initialState);
+  BookCubit(this.fetchBooksUseCase) : super(BookStateInitial());
 
   Future<void> loadBooks() async {
-    emit(state.copyWith(
-      isLoading: true,
-    ));
+    emit(BookStateLoading());
     try {
       final books = await fetchBooksUseCase();
-      emit(state.copyWith(books: books, isLoading: false));
+      emit(BookStateLoaded(books: books));
     } catch (e) {
-      emit(state.copyWith(error: e.toString(), isLoading: false));
+      emit(BookStateFailure());
     }
   }
 }

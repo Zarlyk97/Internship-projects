@@ -1,18 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:library_project/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:library_project/features/library_management/presentation/cubit/book_cubit.dart';
 import 'package:library_project/features/library_management/presentation/pages/splash_screen.dart';
 import 'package:library_project/firebase_options.dart';
 import 'package:library_project/service_locator.dart';
 
 void main() async {
-  init();
+  await init();
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  print(sl.isRegistered<FirebaseFirestore>());
+  print(sl.isRegistered<BookCubit>());
+
   runApp(const MyApp());
 }
 
@@ -26,6 +32,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
           create: (context) => sl<AuthCubit>(),
         ),
+        BlocProvider(create: (context) => sl<BookCubit>())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

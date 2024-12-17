@@ -1,7 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+import 'package:library_project/features/library_management/domain/entities/book_model.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({super.key});
+  final Book book;
+  const DetailPage({
+    super.key,
+    required this.book,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,21 +22,21 @@ class DetailPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(25),
-              child: Image.network(
-                'https://bookhouse.kg/media/galleryphoto/2021/12/52b2e83f-8f47-41f7-be24-387310ab7681.jpg.600x780_q94.jpg',
-                height: 450,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
+            // ClipRRect(
+            //   borderRadius: BorderRadius.circular(25),
+            //   child: Image.asset(
+            //     image.toString(),
+            //     height: 450,
+            //     width: double.infinity,
+            //     fit: BoxFit.cover,
+            //   ),
+            // ),
             const SizedBox(
               height: 20,
             ),
-            const Text(
-              'Title',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Text(
+              book.title,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(
               height: 20,
