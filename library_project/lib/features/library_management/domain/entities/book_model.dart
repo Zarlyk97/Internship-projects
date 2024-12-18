@@ -5,6 +5,7 @@ class Book {
     required this.author,
     required this.genre,
     required this.copies,
+    this.isRented = false,
   });
 
   final String? id;
@@ -12,4 +13,5 @@ class Book {
   final String author;
   final String genre;
   final int copies;
+  final bool isRented;
 }

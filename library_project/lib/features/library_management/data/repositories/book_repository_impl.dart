@@ -16,17 +16,18 @@ class BookRepositoryImpl implements BookRepository {
   }
 
   @override
-  Future<void> rentBook(String bookId) async {
-    final docRef = firestore.collection('books').doc(bookId);
-    final docSnapshot = await docRef.get();
-    if (docSnapshot.exists) {
-      final data = docSnapshot.data() as Map<String, dynamic>;
-      final copies = data['copies'] ?? 0;
-      if (copies > 0) {
-        await docRef.update({'copies': copies - 1});
-      } else {
-        throw Exception('Book not found');
-      }
-    }
+  Future<void> rentBook(String bookById, String userId) async {
+    final bookRef = firestore.collection('books').doc(bookById);
+    final userRef = firestore.collection('users').doc(userId);
+
+    ////////////// Update book status to "rented" //////////////
+    await bookRef.update({
+      'isRented': true,
+      'userId': userId,
+    });
+    // Колдонуучунун арендалаган китептерине кошуу
+    await userRef.update({
+      'RenredBooks': FieldValue.arrayUnion([bookById]),
+    });
   }
 }

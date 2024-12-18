@@ -22,10 +22,7 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<User> register(
-    String email,
-    String password,
-  ) async {
+  Future<User> register(String email, String password) async {
     try {
       final credetial = await firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);

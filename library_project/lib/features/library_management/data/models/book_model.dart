@@ -7,6 +7,7 @@ class BookModel extends Book {
     required super.author,
     required super.genre,
     required super.copies,
+    required super.isRented,
   });
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
         title: json['title'],
@@ -14,6 +15,7 @@ class BookModel extends Book {
         genre: json['genre'],
         copies:
             json['copies'] is String ? int.tryParse(json['copies']) ?? 1 : 5,
+        isRented: json['isRented'] as bool? ?? false,
       );
   tojson() => {
         'id': id,
@@ -21,5 +23,6 @@ class BookModel extends Book {
         'author': author,
         'genre': genre,
         'copies': copies,
+        'isRented': isRented
       };
 }

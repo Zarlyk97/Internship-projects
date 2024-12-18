@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    context.read<BookCubit>().loadBooks();
+    context.read<BookCubit>().fetchBooks();
     super.initState();
   }
 
@@ -111,11 +111,6 @@ class _HomePageState extends State<HomePage> {
                 return GestureDetector(
                   onTap: () {
                     onTabTapped(index);
-                    // if (index == 0) {
-                    //   context.read<BookCubit>().loadBooks();
-                    // } else {
-                    //   context.read<BookCubit>().loadBooks();
-                    // }
                   },
                   child: SizedBox(
                     height: 25,
@@ -262,14 +257,28 @@ class _HomePageState extends State<HomePage> {
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(double.infinity, 25),
-                                  backgroundColor: Colors.blue,
+                                  backgroundColor:
+                                      book.isRented ? Colors.grey : Colors.blue,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
                                 ),
-                                onPressed: () {},
-                                child: const Text(
-                                  'Аренда',
-                                  style: TextStyle(
+                                onPressed: book.isRented
+                                    ? null
+                                    : () async {
+                                        final user =
+                                            FirebaseAuth.instance.currentUser;
+                                        if (user != null) {
+                                          final userId = user.uid;
+                                          await context
+                                              .read<BookCubit>()
+                                              .rentBook(book.id!, userId);
+                                        } else {
+                                          print('Колдонуучу катталган эмес');
+                                        }
+                                      },
+                                child: Text(
+                                  book.isRented ? 'Выдан' : 'Аренда',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
                                     fontWeight: FontWeight.w600,

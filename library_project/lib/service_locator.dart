@@ -8,6 +8,7 @@ import 'package:library_project/features/auth/presentation/cubit/auth_cubit.dart
 import 'package:library_project/features/library_management/data/repositories/book_repository_impl.dart';
 import 'package:library_project/features/library_management/domain/repositories/book_repository.dart';
 import 'package:library_project/features/library_management/domain/usecases/fetch_books_usecase.dart';
+import 'package:library_project/features/library_management/domain/usecases/rent_book_usecase.dart';
 import 'package:library_project/features/library_management/presentation/cubit/book_cubit.dart';
 
 import 'features/auth/domain/repositories/auth_repository.dart';
@@ -22,11 +23,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LoginUsecase(sl<AuthRepository>()));
   sl.registerLazySingleton(() => RegisterUsecase(sl<AuthRepository>()));
 
-  sl.registerFactory(() => BookCubit(
-        sl(),
-      ));
+  sl.registerFactory(() => BookCubit(sl(), sl()));
   sl.registerLazySingleton<BookRepository>(
       () => BookRepositoryImpl(firestore: sl()));
   sl.registerLazySingleton(() => FetchBookUsecase(sl()));
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+  sl.registerLazySingleton(() => RentBookUsecase(sl()));
 }

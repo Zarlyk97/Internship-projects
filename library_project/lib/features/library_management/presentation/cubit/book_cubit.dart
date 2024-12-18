@@ -1,13 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:library_project/features/library_management/domain/usecases/fetch_books_usecase.dart';
+import 'package:library_project/features/library_management/domain/usecases/rent_book_usecase.dart';
 import 'package:library_project/features/library_management/presentation/cubit/book_state.dart';
 
 class BookCubit extends Cubit<BookState> {
-  // final FirebaseFirestore _firebaseFirestore;
+  final RentBookUsecase rentBookUseCase;
   final FetchBookUsecase fetchBooksUseCase;
-  BookCubit(this.fetchBooksUseCase) : super(BookStateInitial());
+  BookCubit(this.rentBookUseCase, this.fetchBooksUseCase)
+      : super(BookStateInitial());
 
-  Future<void> loadBooks() async {
+  Future<void> fetchBooks() async {
     emit(BookStateLoading());
     try {
       final books = await fetchBooksUseCase();
@@ -17,21 +19,14 @@ class BookCubit extends Cubit<BookState> {
     }
   }
 
-//   Future<void> rentBook(String bookId, String userId) async {
-//     try {
-// ///////////
-//       await _firebaseFirestore
-//           .collection('books')
-//           .doc(bookId)
-//           .update({'isRented': true, 'rentedBy': userId});
-
-//       //////////
-//       await _firebaseFirestore.collection('users').doc(userId).update({
-//         'rentedBooks': FieldValue.arrayUnion([bookId])
-//       });
-//       emit(BookStateRented());
-//     } catch (e) {
-//       emit(BookStateFailure());
-//     }
-//   }
+  Future<void> rentBook(String bookId, String userId) async {
+    try {
+      emit(BookStateLoading());
+      await rentBookUseCase(bookId, userId);
+      emit(BookStateLoaded(books: []));
+      await fetchBooks();
+    } catch (e) {
+      emit(BookStateFailure());
+    }
+  }
 }
