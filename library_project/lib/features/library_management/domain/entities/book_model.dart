@@ -12,6 +12,6 @@ class Book {
   final String title;
   final String author;
   final String genre;
-  final int copies;
+  int copies;
   bool isRented;
 }

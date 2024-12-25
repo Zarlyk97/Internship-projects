@@ -257,26 +257,26 @@ class _HomePageState extends State<HomePage> {
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(double.infinity, 25),
-                                  backgroundColor: book.copies < 0
-                                      ? Colors.grey
-                                      : Colors.blue,
+                                  backgroundColor:
+                                      (book.copies > 0 || book.isRented)
+                                          ? Colors.grey
+                                          : Colors.blue,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
                                 ),
-                                onPressed: book.isRented
+                                onPressed: (book.copies <= 0 || book.isRented)
                                     ? null
                                     : () async {
                                         final user =
                                             FirebaseAuth.instance.currentUser;
                                         if (user != null) {
-                                          final userId = user.uid;
                                           await context
                                               .read<BookCubit>()
-                                              .rentBook(book.id!, userId, 1);
+                                              .rentBook(book.id!);
                                         } else {}
                                       },
                                 child: Text(
-                                  book.copies < 0 ? 'Выдан' : 'Аренда',
+                                  book.copies > 0 ? 'Выдан' : 'Аренда',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,

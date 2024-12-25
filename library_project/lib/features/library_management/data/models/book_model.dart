@@ -26,4 +26,59 @@ class BookModel extends Book {
         'copies': copies,
         'isRented': isRented
       };
+
+  factory BookModel.fromMap(Map<String, dynamic> map, String documentId) {
+    return BookModel(
+      genre: map['genre'] ?? '',
+      id: documentId,
+      title: map['title'] ?? '',
+      author: map['author'] ?? '',
+      copies: map['copies'] ?? 0,
+      isRented: map['isRented'] ?? false,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'author': author,
+      'copies': copies,
+      'isRented': isRented,
+    };
+  }
 }
+
+// class Book {
+//   final String id;
+//   final String title;
+//   final String author;
+//   int copies;
+//   bool isRented;
+
+//   Book({
+//     required this.id,
+//     required this.title,
+//     required this.author,
+//     required this.copies,
+//     required this.isRented,
+//   });
+
+//   factory Book.fromMap(Map<String, dynamic> map, String documentId) {
+//     return Book(
+//       id: documentId,
+//       title: map['title'] ?? '',
+//       author: map['author'] ?? '',
+//       copies: map['copies'] ?? 0,
+//       isRented: map['isRented'] ?? false,
+//     );
+//   }
+
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'title': title,
+//       'author': author,
+//       'copies': copies,
+//       'isRented': isRented,
+//     };
+//   }
+// }

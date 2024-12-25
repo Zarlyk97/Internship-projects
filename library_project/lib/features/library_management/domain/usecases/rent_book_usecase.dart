@@ -5,7 +5,17 @@ class RentBookUsecase {
 
   RentBookUsecase(this._bookRepository);
 
-  Future<void> call(String bookById, String userId, int copies) async {
-    return await _bookRepository.rentBook(bookById, userId, copies);
+  Future<void> execute(
+    String bookId,
+  ) async {
+    // Book тизмесин алып келүү же башка логика
+    final book = await _bookRepository.getBookById(bookId);
+    if (book.copies > 0) {
+      book.copies -= 1;
+      book.isRented = book.copies == 0;
+      await _bookRepository.updatBook(book);
+    } else {
+      throw Exception('No copies available');
+    }
   }
 }
