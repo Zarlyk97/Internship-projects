@@ -19,10 +19,10 @@ class BookCubit extends Cubit<BookState> {
     }
   }
 
-  Future<void> rentBook(String bookId, String userId) async {
+  Future<void> rentBook(String bookId, String userId, int copies) async {
     try {
       emit(BookStateLoading());
-      await rentBookUseCase(bookId, userId);
+      await rentBookUseCase(bookId, userId, copies);
       emit(BookStateLoaded(books: []));
       await fetchBooks();
     } catch (e) {

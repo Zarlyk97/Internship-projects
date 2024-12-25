@@ -257,8 +257,9 @@ class _HomePageState extends State<HomePage> {
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(double.infinity, 25),
-                                  backgroundColor:
-                                      book.isRented ? Colors.grey : Colors.blue,
+                                  backgroundColor: book.copies < 0
+                                      ? Colors.grey
+                                      : Colors.blue,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
                                 ),
@@ -271,13 +272,11 @@ class _HomePageState extends State<HomePage> {
                                           final userId = user.uid;
                                           await context
                                               .read<BookCubit>()
-                                              .rentBook(book.id!, userId);
-                                        } else {
-                                          print('Колдонуучу катталган эмес');
-                                        }
+                                              .rentBook(book.id!, userId, 1);
+                                        } else {}
                                       },
                                 child: Text(
-                                  book.isRented ? 'Выдан' : 'Аренда',
+                                  book.copies < 0 ? 'Выдан' : 'Аренда',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,

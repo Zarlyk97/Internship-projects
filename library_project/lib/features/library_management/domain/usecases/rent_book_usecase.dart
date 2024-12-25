@@ -5,7 +5,7 @@ class RentBookUsecase {
 
   RentBookUsecase(this._bookRepository);
 
-  Future<void> call(String bookById, String userId) async {
-    return await _bookRepository.rentBook(bookById, userId);
+  Future<void> call(String bookById, String userId, int copies) async {
+    return await _bookRepository.rentBook(bookById, userId, copies);
   }
 }

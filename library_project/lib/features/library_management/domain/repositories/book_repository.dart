@@ -2,5 +2,5 @@ import 'package:library_project/features/library_management/domain/entities/book
 
 abstract class BookRepository {
   Future<List<Book>> fetchBooks();
-  Future<void> rentBook(String bookById, String userId);
+  Future<void> rentBook(String bookById, String userId, int copies);
 }
