@@ -1,8 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:library_project/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:library_project/features/library_management/data/models/images_model.dart';
+import 'package:library_project/features/library_management/presentation/cubit/book_cubit.dart';
+import 'package:library_project/features/library_management/presentation/cubit/book_state.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
@@ -56,44 +60,59 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(
                       height: 10,
                     ),
-                    Expanded(
-                      child: ListView.separated(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              tileColor: Colors.grey[200],
-                              contentPadding: const EdgeInsets.all(10),
-                              leading: const CircleAvatar(
-                                radius: 30,
-                                backgroundImage: NetworkImage(
-                                    'https://images.unsplash.com/photo-1498050108023-c5249f4df085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80'),
-                              ),
-                              title: const Text('title',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20)),
-                              subtitle: const Text('author',
-                                  style: TextStyle(fontSize: 15)),
-                              trailing: TextButton(
-                                onPressed: () {},
-                                child: const Text('Возврщать'),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) => const SizedBox(
-                                height: 10,
-                              ),
-                          itemCount: 10),
+                    BlocBuilder<BookCubit, BookState>(
+                      builder: (context, state) {
+                        if (state is BookStateLoading) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        } else if (state is BookStateFailure) {
+                          return const Text('Error: Somethng went wrong :) ');
+                        } else if (state is BookStateLoaded) {
+                          return Expanded(
+                            child: ListView.separated(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) {
+                                  final book = state.books[index];
+                                  return ListTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    tileColor: Colors.grey[200],
+                                    contentPadding: const EdgeInsets.all(10),
+                                    leading: CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage: AssetImage(
+                                            bookimages[index].image)),
+                                    title: Text(book.title,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17)),
+                                    subtitle: Text(" Автор: ${book.author}",
+                                        style: const TextStyle(fontSize: 15)),
+                                    trailing: TextButton(
+                                      onPressed: () {},
+                                      child: const Text('Возврщать'),
+                                    ),
+                                  );
+                                },
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                itemCount: state.books.length),
+                          );
+                        } else if (state is BookStateFailure) {
+                          return const Text('Error: Somethng went wrong :) ');
+                        }
+                        return Container();
+                      },
                     )
                   ],
                 ),
               );
             }
-            return Text('Ката чыкты');
+            return const Text('Ката чыкты');
           },
         ));
   }

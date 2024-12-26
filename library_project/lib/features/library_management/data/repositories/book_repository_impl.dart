@@ -38,4 +38,22 @@ class BookRepositoryImpl implements BookRepository {
       throw Exception('Failed to update book: $e');
     }
   }
+
+  @override
+  Future<void> addRentedBook(String bookId, String userId) async {
+    try {
+      final bookRef = firestore.collection('rented_books').doc(bookId);
+      await bookRef.set({
+        'rentedBooks': FieldValue.arrayUnion([
+          {
+            'bookId': bookId,
+            'rentedDate': DateTime.now().toIso8601String(),
+          }
+        ])
+      });
+      SetOptions(merge: true);
+    } catch (e) {
+      throw Exception('Failed to add rented book: $e');
+    }
+  }
 }

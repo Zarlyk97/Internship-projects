@@ -33,7 +33,7 @@ class BookModel extends Book {
       id: documentId,
       title: map['title'] ?? '',
       author: map['author'] ?? '',
-      copies: map['copies'] is String ? int.parse(map['copies']) : 0,
+      copies: map['copies'] is String ? int.tryParse(map['copies']) ?? 1 : 0,
       isRented: map['isRented'] ?? false,
     );
   }

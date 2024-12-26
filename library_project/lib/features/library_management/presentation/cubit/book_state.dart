@@ -1,11 +1,11 @@
-import 'package:library_project/features/library_management/domain/entities/book_model.dart';
+import 'package:library_project/features/library_management/data/models/book_model.dart';
 
 abstract final class BookState {}
 
 final class BookStateInitial extends BookState {}
 
 final class BookStateLoaded extends BookState {
-  final List<Book> books;
+  final List<BookModel> books;
 
   BookStateLoaded({required this.books});
 }

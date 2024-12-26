@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:library_project/features/auth/presentation/pages/sign_in_page.dart';
+import 'package:library_project/features/library_management/data/models/book_model.dart';
 import 'package:library_project/features/library_management/data/models/images_model.dart';
-import 'package:library_project/features/library_management/domain/entities/book_model.dart';
 import 'package:library_project/features/library_management/presentation/cubit/book_cubit.dart';
 import 'package:library_project/features/library_management/presentation/cubit/book_state.dart';
 import 'package:library_project/features/library_management/presentation/pages/detail_page.dart';
@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  List<Book> books = [];
+  List<BookModel> books = [];
 
   void onTabTapped(int index) {
     setState(() {
@@ -264,34 +264,15 @@ class _HomePageState extends State<HomePage> {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
                                 ),
-                                onPressed: (book.copies > 0 && !book.isRented)
-                                    ? null
-                                    : () async {
-                                        final user =
-                                            FirebaseAuth.instance.currentUser;
-                                        if (user != null) {
-                                          await context
-                                              .read<BookCubit>()
-                                              .rentBook(book.id!);
-                                        } else {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: const Text('Ошибка'),
-                                              content: const Text(
-                                                  'Вы не авторизованы'),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text('OK'),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      },
+                                onPressed: book.copies > 0
+                                    ? () {
+                                        final userId = FirebaseAuth
+                                            .instance.currentUser!.uid;
+                                        context
+                                            .read<BookCubit>()
+                                            .rentBook(book.id!, userId);
+                                      }
+                                    : null,
                                 child: Text(
                                   book.isRented ? 'Аренда' : 'Выдан',
                                   style: const TextStyle(

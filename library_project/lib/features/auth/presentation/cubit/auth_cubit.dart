@@ -37,6 +37,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+////////////  get user profile
   Future<void> getUserProfile() async {
     try {
       emit(AuthLoading());
