@@ -14,8 +14,9 @@ class BookModel extends Book {
         title: json['title'],
         author: json['author'],
         genre: json['genre'],
-        copies:
-            json['copies'] is String ? int.tryParse(json['copies']) ?? 1 : 5,
+        copies: json['copies'] is String
+            ? int.tryParse(json['copies']) ?? 0
+            : (json['copies'] is int ? json['copies'] : 0),
         isRented: json['isRented'] as bool? ?? false,
       );
   tojson() => {
@@ -33,7 +34,9 @@ class BookModel extends Book {
       id: documentId,
       title: map['title'] ?? '',
       author: map['author'] ?? '',
-      copies: map['copies'] is String ? int.tryParse(map['copies']) ?? 1 : 0,
+      copies: map['copies'] is String
+          ? int.tryParse(map['copies']) ?? 0
+          : (map['copies'] is int ? map['copies'] : 0),
       isRented: map['isRented'] ?? false,
     );
   }

@@ -9,7 +9,9 @@ import 'package:library_project/features/library_management/presentation/cubit/b
 import 'package:library_project/features/library_management/presentation/cubit/book_state.dart';
 
 class ProfilePage extends StatefulWidget {
+  final String userId;
   const ProfilePage({
+    required this.userId,
     super.key,
   });
 
@@ -68,6 +70,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         } else if (state is BookStateFailure) {
                           return const Text('Error: Somethng went wrong :) ');
                         } else if (state is BookStateLoaded) {
+                          if (state.books.isEmpty) {
+                            return const Center(child: Text('No books rented'));
+                          }
                           return Expanded(
                             child: ListView.separated(
                                 scrollDirection: Axis.vertical,

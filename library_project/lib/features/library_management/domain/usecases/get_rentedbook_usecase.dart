@@ -7,31 +7,32 @@ class GetRentedbookUsecase {
 
   GetRentedbookUsecase(this.bookRepository);
   Future<List<BookModel>> getUserRentedBooks(String userId) async {
-    final userRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    final userDoc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
 
     // User документин ал
-    final userSnapshot = await userRef.get();
-    if (userSnapshot.exists) {
-      final userData = userSnapshot.data()!;
-
-      // bookList массивинен ID'лерди алуу
-      List<String> bookIds = List<String>.from(userData['bookList'] ?? []);
-
-      // ID'лер боюнча китептерди алып келүү
-      final books = <BookModel>[];
-      for (String bookId in bookIds) {
-        final bookSnapshot = await FirebaseFirestore.instance
-            .collection('books')
-            .doc(bookId)
-            .get();
-
-        if (bookSnapshot.exists) {
-          books.add(BookModel.fromMap(bookSnapshot.data()!, bookSnapshot.id));
-        }
-      }
-      return books;
-    } else {
+    if (userDoc.exists) {
       throw Exception('User not found');
     }
+
+    // bookList массивинен ID'лерди алуу
+    List<String> bookIds = List<String>.from(userDoc.data()?['bookList'] ?? []);
+    if (bookIds.isEmpty) {
+      return [];
+    }
+
+    // ID'лер боюнча китептерди алып келүү
+    final books = <BookModel>[];
+    for (var bookId in bookIds) {
+      final bookSnapshot = await FirebaseFirestore.instance
+          .collection('books')
+          .doc(bookId)
+          .get();
+
+      if (bookSnapshot.exists) {
+        books.add(BookModel.fromMap(bookSnapshot.data()!, bookSnapshot.id));
+      }
+    }
+    return books;
   }
 }

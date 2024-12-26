@@ -12,6 +12,10 @@ final class BookStateLoaded extends BookState {
 
 final class BookStateLoading extends BookState {}
 
-final class BookStateFailure extends BookState {}
+final class BookStateFailure extends BookState {
+  final String errormessage;
+
+  BookStateFailure({required this.errormessage});
+}
 
 final class BookStateRented extends BookState {}

@@ -19,11 +19,13 @@ class BookCubit extends Cubit<BookState> {
   Future<void> fetchBooks() async {
     emit(BookStateLoading());
     try {
-      final books = await fetchBooksUseCase();
+      final fedchedBooks = await fetchBooksUseCase();
+      books.clear();
+      books.addAll(fedchedBooks);
 
       emit(BookStateLoaded(books: books));
     } catch (e) {
-      emit(BookStateFailure());
+      emit(BookStateFailure(errormessage: e.toString()));
     }
   }
 
@@ -31,9 +33,9 @@ class BookCubit extends Cubit<BookState> {
     emit(BookStateLoading());
     try {
       await rentBookUseCase.execute(bookId, userId);
-      emit(BookStateLoaded(books: books));
+      await fetchBooks();
     } catch (e) {
-      emit(BookStateFailure());
+      emit(BookStateFailure(errormessage: e.toString()));
     }
   }
 
@@ -43,6 +45,8 @@ class BookCubit extends Cubit<BookState> {
       final rentedBooks = await getRentedbookUsecase.getUserRentedBooks(userId);
 
       emit(BookStateLoaded(books: rentedBooks));
-    } catch (e) {}
+    } catch (e) {
+      emit(BookStateFailure(errormessage: e.toString()));
+    }
   }
 }

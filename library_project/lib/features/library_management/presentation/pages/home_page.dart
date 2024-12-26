@@ -61,9 +61,13 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
                 onPressed: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ProfilePage()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        userId: FirebaseAuth.instance.currentUser!.uid,
+                      ),
+                    ),
+                  );
                 },
                 icon: const Icon(Icons.person)),
           ),
@@ -274,7 +278,9 @@ class _HomePageState extends State<HomePage> {
                                       }
                                     : null,
                                 child: Text(
-                                  book.isRented ? 'Аренда' : 'Выдан',
+                                  (book.copies > 0 && !book.isRented)
+                                      ? 'В аренде'
+                                      : 'Аренда',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
