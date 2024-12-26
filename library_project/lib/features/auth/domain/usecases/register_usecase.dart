@@ -5,10 +5,11 @@ class RegisterUsecase {
   final AuthRepository _authRepository;
 
   RegisterUsecase(this._authRepository);
-  Future<User> call(String email, String password) async {
+  Future<User> call(String email, String password, String username) async {
     return await _authRepository.register(
       email,
       password,
+      username,
     );
   }
 }

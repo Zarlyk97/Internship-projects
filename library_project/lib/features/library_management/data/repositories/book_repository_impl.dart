@@ -12,7 +12,7 @@ class BookRepositoryImpl implements BookRepository {
   Future<List<BookModel>> fetchBooks() async {
     final snapshot = await firestore.collection('books').get();
     return snapshot.docs
-        .map((doc) => BookModel.fromJson(doc.data()..['id'] = doc.id, doc.id))
+        .map((doc) => BookModel.fromMap(doc.data()..['id'] = doc.id, doc.id))
         .toList();
   }
 
@@ -21,7 +21,7 @@ class BookRepositoryImpl implements BookRepository {
     try {
       final doc = await firestore.collection('books').doc(bookId).get();
       if (doc.exists) {
-        return BookModel.fromJson(doc.data()!, doc.id);
+        return BookModel.fromMap(doc.data()!, doc.id);
       } else {
         throw Exception('Book not found');
       }
@@ -33,7 +33,7 @@ class BookRepositoryImpl implements BookRepository {
   @override
   Future<void> updatBook(BookModel book) async {
     try {
-      await firestore.collection('books').doc(book.id).update(book.tojson());
+      await firestore.collection('books').doc(book.id).update(book.toMap());
     } catch (e) {
       throw Exception('Failed to update book: $e');
     }

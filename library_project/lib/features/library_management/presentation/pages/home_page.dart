@@ -258,13 +258,13 @@ class _HomePageState extends State<HomePage> {
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(double.infinity, 25),
                                   backgroundColor:
-                                      (book.copies > 0 || book.isRented)
+                                      (book.copies > 0 && !book.isRented)
                                           ? Colors.grey
                                           : Colors.blue,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
                                 ),
-                                onPressed: (book.copies <= 0 || book.isRented)
+                                onPressed: (book.copies > 0 && !book.isRented)
                                     ? null
                                     : () async {
                                         final user =
@@ -273,10 +273,27 @@ class _HomePageState extends State<HomePage> {
                                           await context
                                               .read<BookCubit>()
                                               .rentBook(book.id!);
-                                        } else {}
+                                        } else {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text('Ошибка'),
+                                              content: const Text(
+                                                  'Вы не авторизованы'),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text('OK'),
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                        }
                                       },
                                 child: Text(
-                                  book.copies > 0 ? 'Выдан' : 'Аренда',
+                                  book.isRented ? 'Аренда' : 'Выдан',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,
