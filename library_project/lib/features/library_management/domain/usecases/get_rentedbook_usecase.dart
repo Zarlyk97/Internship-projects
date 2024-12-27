@@ -6,33 +6,36 @@ class GetRentedbookUsecase {
   final BookRepository bookRepository;
 
   GetRentedbookUsecase(this.bookRepository);
+
   Future<List<BookModel>> getUserRentedBooks(String userId) async {
-    final userDoc =
-        await FirebaseFirestore.instance.collection('users').doc(userId).get();
-
-    // User документин ал
-    if (userDoc.exists) {
-      throw Exception('User not found');
-    }
-
-    // bookList массивинен ID'лерди алуу
-    List<String> bookIds = List<String>.from(userDoc.data()?['bookList'] ?? []);
-    if (bookIds.isEmpty) {
-      return [];
-    }
-
-    // ID'лер боюнча китептерди алып келүү
-    final books = <BookModel>[];
-    for (var bookId in bookIds) {
-      final bookSnapshot = await FirebaseFirestore.instance
-          .collection('books')
-          .doc(bookId)
+    try {
+      final rentedBooksSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('rented_books')
           .get();
 
-      if (bookSnapshot.exists) {
-        books.add(BookModel.fromMap(bookSnapshot.data()!, bookSnapshot.id));
+      // Rent'талган китептерди алуу
+      if (rentedBooksSnapshot.docs.isEmpty) {
+        return []; // Китеп жок болсо бош тизме кайтаруу
       }
+
+      final books = <BookModel>[];
+      for (var rentedBookDoc in rentedBooksSnapshot.docs) {
+        final bookId = rentedBookDoc['book_id'];
+        final bookSnapshot = await FirebaseFirestore.instance
+            .collection('books')
+            .doc(bookId)
+            .get();
+
+        if (bookSnapshot.exists) {
+          books.add(BookModel.fromMap(bookSnapshot.data()!, bookSnapshot.id));
+        }
+      }
+
+      return books;
+    } catch (e) {
+      throw Exception('Failed to get rented books: $e');
     }
-    return books;
   }
 }

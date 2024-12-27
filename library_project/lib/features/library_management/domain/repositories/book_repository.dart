@@ -3,6 +3,6 @@ import 'package:library_project/features/library_management/data/models/book_mod
 abstract class BookRepository {
   Future<List<BookModel>> fetchBooks();
   Future<BookModel> getBookById(String bookId);
-  Future<void> updatBook(BookModel book);
+  Future<void> updateBook(BookModel book);
   Future<void> addRentedBook(String bookId, String userId);
 }

@@ -29,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     context.read<BookCubit>().fetchBooks();
+
     super.initState();
   }
 

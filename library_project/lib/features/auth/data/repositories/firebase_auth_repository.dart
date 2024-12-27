@@ -38,7 +38,11 @@ class FirebaseAuthRepository implements AuthRepository {
       FirebaseFirestore.instance
           .collection('users')
           .doc(credetial.user!.uid)
-          .set({'email': email, 'bookList': [], 'userName': userName});
+          .set({
+        'email': email,
+        'userName': userName,
+        'createdAt': Timestamp.now()
+      });
       return User(
         id: credetial.user!.uid,
         email: credetial.user!.email!,

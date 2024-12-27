@@ -8,13 +8,18 @@ import 'package:library_project/features/library_management/presentation/cubit/b
 
 class BookCubit extends Cubit<BookState> {
   final BookRepository bookRepository;
-  final List<BookModel> books = [];
   final RentBookUsecase rentBookUseCase;
   final FetchBookUsecase fetchBooksUseCase;
   final GetRentedbookUsecase getRentedbookUsecase;
-  BookCubit(this.rentBookUseCase, this.fetchBooksUseCase, this.bookRepository,
-      this.getRentedbookUsecase)
-      : super(BookStateInitial());
+
+  BookCubit(
+    this.rentBookUseCase,
+    this.fetchBooksUseCase,
+    this.bookRepository,
+    this.getRentedbookUsecase,
+  ) : super(BookStateInitial());
+
+  final List<BookModel> books = [];
 
   Future<void> fetchBooks() async {
     emit(BookStateLoading());
@@ -43,7 +48,6 @@ class BookCubit extends Cubit<BookState> {
     emit(BookStateLoading());
     try {
       final rentedBooks = await getRentedbookUsecase.getUserRentedBooks(userId);
-
       emit(BookStateLoaded(books: rentedBooks));
     } catch (e) {
       emit(BookStateFailure(errormessage: e.toString()));

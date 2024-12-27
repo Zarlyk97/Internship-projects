@@ -12,7 +12,7 @@ class RentBookUsecase {
       book.copies -= 1;
       book.isRented = book.copies == 0;
 
-      await _bookRepository.updatBook(book);
+      await _bookRepository.updateBook(book);
       await _bookRepository.addRentedBook(bookId, userId);
     } else {
       throw Exception('No copies available');
