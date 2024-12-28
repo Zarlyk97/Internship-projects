@@ -15,9 +15,9 @@ class GetRentedbookUsecase {
           .collection('rented_books')
           .get();
 
-      // Rent'талган китептерди алуу
+      ////////////////////////////////   аренда болгон китептерди алуу
       if (rentedBooksSnapshot.docs.isEmpty) {
-        return []; // Китеп жок болсо бош тизме кайтаруу
+        return []; ///////////////////Китеп жок болсо бош тизме кайтаруу
       }
 
       final books = <BookModel>[];

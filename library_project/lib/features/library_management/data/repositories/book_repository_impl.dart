@@ -31,7 +31,8 @@ class BookRepositoryImpl implements BookRepository {
   }
 
   @override
-  Future<void> updateBook(BookModel book) async {
+  Future<void> updateBook(
+      BookModel book, DateTime rentalStartDate, DateTime rentalEndDate) async {
     try {
       await firestore.collection('books').doc(book.id).update(book.toMap());
     } catch (e) {
@@ -40,7 +41,10 @@ class BookRepositoryImpl implements BookRepository {
   }
 
   @override
-  Future<void> addRentedBook(String bookId, String userId) async {
+  Future<void> addRentedBook(
+    String bookId,
+    String userId,
+  ) async {
     try {
       final bookDoc = await firestore.collection('books').doc(bookId).get();
       if (!bookDoc.exists) {
@@ -53,8 +57,8 @@ class BookRepositoryImpl implements BookRepository {
           .add({
         'book_id': bookId,
         'rented_date': Timestamp.now(),
-        'return_date': null, // Китеп кайтарылбаган учурда
-        'status': 'active', // Китеп активдүү арендада
+        'return_date': null,
+        'status': 'active',
       });
     } catch (e) {
       throw Exception('Failed to add rented book: $e');
