@@ -53,7 +53,10 @@ class _HomePageState extends State<HomePage> {
         title: const Text(
           'Библиотека',
           style: TextStyle(
-              color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
+            color: Colors.black,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           CircleAvatar(
@@ -82,15 +85,20 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding:
             const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _genreWidget(),
-            const SizedBox(
-              height: 10,
-            ),
-            _bookWidget(),
-          ],
+        child: RefreshIndicator(
+          onRefresh: () async {
+            await context.read<BookCubit>().fetchBooks();
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _genreWidget(),
+              const SizedBox(
+                height: 10,
+              ),
+              _bookWidget(),
+            ],
+          ),
         ),
       ),
     );
@@ -266,10 +274,11 @@ class _HomePageState extends State<HomePage> {
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(double.infinity, 25),
-                                  backgroundColor:
-                                      (book.copies > 0 && !book.isRented)
-                                          ? Colors.grey
-                                          : Colors.blue,
+                                  backgroundColor: book.copies > 0
+                                      ? (book.isRented
+                                          ? Colors.amber
+                                          : Colors.blue)
+                                      : Colors.grey, //
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
                                 ),
@@ -277,15 +286,21 @@ class _HomePageState extends State<HomePage> {
                                     ? () {
                                         final userId = FirebaseAuth
                                             .instance.currentUser!.uid;
-                                        context
-                                            .read<BookCubit>()
-                                            .rentBook(book.id!, userId);
+                                        if (!book.isRented) {
+                                          context
+                                              .read<BookCubit>()
+                                              .rentBook(book.id!, userId);
+                                        } else {
+                                          context
+                                              .read<BookCubit>()
+                                              .returnBook(book.id!, userId);
+                                        }
                                       }
                                     : null,
                                 child: Text(
-                                  (book.copies > 0 && !book.isRented)
-                                      ? 'В аренде'
-                                      : 'Аренда',
+                                  book.copies > 0
+                                      ? (book.isRented ? 'Возврат' : 'Аренда')
+                                      : 'Нет в наличии',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 12,

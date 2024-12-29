@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -45,90 +46,103 @@ class _ProfilePageState extends State<ProfilePage> {
           } else if (state is AuthSuccess) {
             return Padding(
               padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              child: Column(
-                children: [
-                  Center(
-                    child: Text(
-                      state.userEntity.userName ?? 'UserName',
-                      style: const TextStyle(
-                          fontSize: 25, fontWeight: FontWeight.bold),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await context
+                      .read<BookCubit>()
+                      .fetchRentedBooks(widget.userId);
+                },
+                child: Column(
+                  children: [
+                    Center(
+                      child: Text(
+                        state.userEntity.userName ?? 'UserName',
+                        style: const TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    state.userEntity.email,
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: BlocBuilder<BookCubit, BookState>(
-                      builder: (context, state) {
-                        if (state is BookStateLoading) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else if (state is BookStateFailure) {
-                          return const Text('Error: Something went wrong :) ');
-                        } else if (state is BookStateLoaded) {
-                          if (state.books.isEmpty) {
+                    const SizedBox(height: 10),
+                    Text(
+                      state.userEntity.email,
+                      style: const TextStyle(fontSize: 15),
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: BlocBuilder<BookCubit, BookState>(
+                        builder: (context, state) {
+                          if (state is BookStateLoading) {
                             return const Center(
-                                child: Text('Арендада китеп жок'));
+                                child: CircularProgressIndicator());
+                          } else if (state is BookStateFailure) {
+                            return const Text(
+                                'Error: Something went wrong :) ');
+                          } else if (state is BookStateLoaded) {
+                            if (state.books.isEmpty) {
+                              return const Center(
+                                  child: Text('Арендада китеп жок'));
+                            }
+                            return ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                final book = state.books[index];
+                                return ListTile(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  tileColor: Colors.grey[200],
+                                  contentPadding: const EdgeInsets.all(10),
+                                  leading: Stack(
+                                    children: [
+                                      const CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage: AssetImage(
+                                            'assets/images/library.png'), // Replace with dynamic image
+                                      ),
+                                      SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: DecoratedBox(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(6)),
+                                              child: Center(
+                                                  child:
+                                                      Text('${index + 1}')))),
+                                    ],
+                                  ),
+                                  title: Text(book.title,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 17)),
+                                  subtitle: Text(
+                                    "Автор: ${book.author}",
+                                    style: const TextStyle(fontSize: 15),
+                                  ),
+                                  trailing: TextButton(
+                                    onPressed: () {
+                                      final userId = FirebaseAuth
+                                          .instance.currentUser!.uid;
+                                      context
+                                          .read<BookCubit>()
+                                          .returnBook(book.id!, userId);
+                                    },
+                                    child: const Text('Возврат'),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: 10),
+                              itemCount: state.books.length,
+                            );
                           }
-                          return ListView.separated(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              final book = state.books[index];
-                              return ListTile(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                tileColor: Colors.grey[200],
-                                contentPadding: const EdgeInsets.all(10),
-                                leading: Stack(
-                                  children: [
-                                    const CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: AssetImage(
-                                          'assets/images/library.png'), // Replace with dynamic image
-                                    ),
-                                    SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: DecoratedBox(
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(6)),
-                                            child: Center(
-                                                child: Text('${index + 1}')))),
-                                  ],
-                                ),
-                                title: Text(book.title,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 17)),
-                                subtitle: Text(
-                                  "Автор: ${book.author}",
-                                  style: const TextStyle(fontSize: 15),
-                                ),
-                                trailing: TextButton(
-                                  onPressed: () {
-                                    // Возврат логикасы кошулат
-                                  },
-                                  child: const Text('Возврат'),
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: 10),
-                            itemCount: state.books.length,
-                          );
-                        }
-                        return Container();
-                      },
+                          return Container();
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           }

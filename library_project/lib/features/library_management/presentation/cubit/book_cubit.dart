@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:library_project/features/library_management/data/models/book_model.dart';
 import 'package:library_project/features/library_management/domain/repositories/book_repository.dart';
@@ -46,6 +47,28 @@ class BookCubit extends Cubit<BookState> {
     try {
       final rentedBooks = await getRentedbookUsecase.getUserRentedBooks(userId);
       emit(BookStateLoaded(books: rentedBooks));
+    } catch (e) {
+      emit(BookStateFailure(errormessage: e.toString()));
+    }
+  }
+
+  Future<void> returnBook(String bookId, String userId) async {
+    emit(BookStateLoading());
+    try {
+      final rentedBookRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('rented_Books');
+
+      final bookRef =
+          FirebaseFirestore.instance.collection('books').doc(bookId);
+      // Rented Books коллекциясынан китепти өчүрүү
+      await rentedBookRef.doc(bookId).delete();
+      // Китептин абалын жаңыртуу
+      await bookRef
+          .update({'isRented ': false, ' copies': FieldValue.increment(1)});
+
+      fetchBooks();
     } catch (e) {
       emit(BookStateFailure(errormessage: e.toString()));
     }
