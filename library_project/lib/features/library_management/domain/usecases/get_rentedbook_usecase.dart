@@ -12,7 +12,7 @@ class GetRentedbookUsecase {
       final rentedBooksSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
-          .collection('rented_books')
+          .collection('rented_Books')
           .get();
 
       ///////////////////   Аренда болгон китептерди алуу

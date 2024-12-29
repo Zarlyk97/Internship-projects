@@ -60,17 +60,18 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Colors.grey[350],
             radius: 20,
             child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProfilePage(
-                        userId: FirebaseAuth.instance.currentUser!.uid,
-                      ),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.person)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                        userId: FirebaseAuth.instance.currentUser!.uid),
+                  ),
+                );
+                context.read<BookCubit>().fetchBooks();
+              },
+              icon: const Icon(Icons.person),
+            ),
           ),
           const SizedBox(
             width: 10,
@@ -173,16 +174,19 @@ class _HomePageState extends State<HomePage> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 10,
             ),
-            itemCount: books.length,
+            itemCount: books.length < bookimages.length
+                ? books.length
+                : bookimages.length,
             itemBuilder: (context, index) {
               final book = books[index];
+              final images = bookimages[index].image;
               return GestureDetector(
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => DetailPage(
-                      images: bookimages[index].image,
-                      book: books[index],
+                      images: images,
+                      book: book,
                     ),
                   ),
                 ),

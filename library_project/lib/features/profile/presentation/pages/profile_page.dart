@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:library_project/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:library_project/features/library_management/data/models/images_model.dart';
 import 'package:library_project/features/library_management/presentation/cubit/book_cubit.dart';
 import 'package:library_project/features/library_management/presentation/cubit/book_state.dart';
 
@@ -71,7 +70,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           return const Text('Error: Something went wrong :) ');
                         } else if (state is BookStateLoaded) {
                           if (state.books.isEmpty) {
-                            return const Center(child: Text('No books rented'));
+                            return const Center(
+                                child: Text('Арендада китеп жок'));
                           }
                           return ListView.separated(
                             scrollDirection: Axis.vertical,
@@ -84,10 +84,24 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 tileColor: Colors.grey[200],
                                 contentPadding: const EdgeInsets.all(10),
-                                leading: CircleAvatar(
-                                  radius: 25,
-                                  backgroundImage: AssetImage(bookimages[index]
-                                      .image), // Replace with dynamic image
+                                leading: Stack(
+                                  children: [
+                                    const CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: AssetImage(
+                                          'assets/images/library.png'), // Replace with dynamic image
+                                    ),
+                                    SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: DecoratedBox(
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(6)),
+                                            child: Center(
+                                                child: Text('${index + 1}')))),
+                                  ],
                                 ),
                                 title: Text(book.title,
                                     style: const TextStyle(

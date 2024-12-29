@@ -24,11 +24,8 @@ class BookCubit extends Cubit<BookState> {
   Future<void> fetchBooks() async {
     emit(BookStateLoading());
     try {
-      final fedchedBooks = await fetchBooksUseCase();
-      books.clear();
-      books.addAll(fedchedBooks);
-
-      emit(BookStateLoaded(books: books));
+      final bookS = await bookRepository.fetchBooks();
+      emit(BookStateLoaded(books: bookS));
     } catch (e) {
       emit(BookStateFailure(errormessage: e.toString()));
     }
