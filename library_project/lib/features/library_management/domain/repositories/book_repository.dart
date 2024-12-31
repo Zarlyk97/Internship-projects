@@ -5,6 +5,7 @@ abstract class BookRepository {
   Future<BookModel> getBookById(String bookId);
 
   Future<void> updateBook(
-      BookModel book, DateTime rentalStartDate, DateTime rentalEndDate);
+    BookModel book,
+  );
   Future<void> addRentedBook(String bookId, String userId);
 }

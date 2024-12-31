@@ -36,6 +36,10 @@ class BookCubit extends Cubit<BookState> {
     emit(BookStateLoading());
     try {
       await rentBookUseCase.execute(bookId, userId);
+      final bookRef =
+          FirebaseFirestore.instance.collection('books').doc(bookId);
+      await bookRef.update({'isRented': true}); // Китеп арендада
+
       await fetchBooks();
     } catch (e) {
       emit(BookStateFailure(errormessage: e.toString()));
@@ -58,17 +62,29 @@ class BookCubit extends Cubit<BookState> {
       final rentedBookRef = FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
-          .collection('rented_Books');
+          .collection('rented_Books')
+          .where('book_id', isEqualTo: bookId);
+
+      final rentedBookSnapshot = await rentedBookRef.get(); // Документти алуу
+
+      if (rentedBookSnapshot.docs.isEmpty) {
+        throw Exception('This book is not rented by the user');
+      }
+
+      // Китепти табуу жана аны жоюу
+      for (var doc in rentedBookSnapshot.docs) {
+        await doc.reference.delete();
+      }
 
       final bookRef =
           FirebaseFirestore.instance.collection('books').doc(bookId);
-      // Rented Books коллекциясынан китепти өчүрүү
-      await rentedBookRef.doc(bookId).delete();
-      // Китептин абалын жаңыртуу
-      await bookRef
-          .update({'isRented ': false, ' copies': FieldValue.increment(1)});
 
-      fetchBooks();
+      await bookRef.update({
+        'copies': FieldValue.increment(1),
+        'isRented': false, // Китепти жеткиликтүү кылуу
+      });
+
+      await fetchRentedBooks(userId);
     } catch (e) {
       emit(BookStateFailure(errormessage: e.toString()));
     }

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:library_project/features/library_management/data/models/book_model.dart';
 import 'package:library_project/features/library_management/domain/repositories/book_repository.dart';
 
@@ -31,20 +30,22 @@ class BookRepositoryImpl implements BookRepository {
   }
 
   @override
-  Future<void> updateBook(
-      BookModel book, DateTime rentalStartDate, DateTime rentalEndDate) async {
+  Future<void> updateBook(BookModel book) async {
     try {
-      await firestore.collection('books').doc(book.id).update(book.toMap());
+      await firestore.collection('books').doc(book.id).update({
+        'title': book.title,
+        'author': book.author,
+        'copies': book.copies,
+        'isRented': book.isRented,
+        'genre': book.genre,
+      });
     } catch (e) {
       throw Exception('Failed to update book: $e');
     }
   }
 
   @override
-  Future<void> addRentedBook(
-    String bookId,
-    String userId,
-  ) async {
+  Future<void> addRentedBook(String bookId, String userId) async {
     try {
       final bookDoc = await firestore.collection('books').doc(bookId).get();
       if (!bookDoc.exists) {
@@ -57,7 +58,8 @@ class BookRepositoryImpl implements BookRepository {
           .add({
         'book_id': bookId,
         'rented_date': Timestamp.now(),
-        'return_date': null,
+        'return_date':
+            Timestamp.fromDate(DateTime.now().add(const Duration(days: 7))),
         'status': 'active',
       });
     } catch (e) {
@@ -65,22 +67,28 @@ class BookRepositoryImpl implements BookRepository {
     }
   }
 
-  Future<List<BookModel>> fetchRentedBooks(String userId) async {
-    final snapshot = await firestore
-        .collection('users')
-        .doc(userId)
-        .collection('rented_Books')
-        .get();
-    return snapshot.docs.map((doc) {
-      final bookData = doc.data();
-      return BookModel(
-        id: bookData['book_id'],
-        title: bookData['title'] ?? 'Unknown Title',
-        author: bookData['author'] ?? 'Unknown Author',
-        genre: bookData['genre'],
-        copies: bookData['copies'],
-        isRented: bookData['isRented'],
-      );
-    }).toList();
+  Future<List<Map<String, dynamic>>> fetchRentedBooks(String userId) async {
+    try {
+      final rentedBooksRef =
+          firestore.collection('users').doc(userId).collection('rented_Books');
+
+      final rentedBooksSnapshot = await rentedBooksRef.get();
+      List<Map<String, dynamic>> rentedBooks = [];
+
+      if (rentedBooksSnapshot.docs.isNotEmpty) {
+        for (var doc in rentedBooksSnapshot.docs) {
+          rentedBooks.add({
+            'book_id': doc['book_id'],
+            'rented_date': doc['rented_date'],
+            'return_date': doc['return_date'],
+            'status': doc['status'],
+          });
+        }
+      }
+
+      return rentedBooks; // Арендага алынган китептер
+    } catch (e) {
+      throw Exception('Failed to fetch rented books: $e');
+    }
   }
 }

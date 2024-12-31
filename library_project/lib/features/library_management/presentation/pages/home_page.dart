@@ -71,7 +71,6 @@ class _HomePageState extends State<HomePage> {
                         userId: FirebaseAuth.instance.currentUser!.uid),
                   ),
                 );
-                context.read<BookCubit>().fetchBooks();
               },
               icon: const Icon(Icons.person),
             ),
@@ -278,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                                       ? (book.isRented
                                           ? Colors.amber
                                           : Colors.blue)
-                                      : Colors.grey, //
+                                      : Colors.grey,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 5),
                                 ),
@@ -291,15 +290,33 @@ class _HomePageState extends State<HomePage> {
                                               .read<BookCubit>()
                                               .rentBook(book.id!, userId);
                                         } else {
-                                          context
-                                              .read<BookCubit>()
-                                              .returnBook(book.id!, userId);
+                                          showModalBottomSheet(
+                                              context: context,
+                                              builder: (context) => SizedBox(
+                                                    width: double.infinity,
+                                                    height: 60,
+                                                    child: DecoratedBox(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .vertical(
+                                                          top: Radius.circular(
+                                                              20),
+                                                        ),
+                                                        color: Colors.grey[300],
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                            'Вы уже арендовали книгу ${book.title}'),
+                                                      ),
+                                                    ),
+                                                  ));
                                         }
                                       }
                                     : null,
                                 child: Text(
                                   book.copies > 0
-                                      ? (book.isRented ? 'Возврат' : 'Аренда')
+                                      ? (book.isRented ? 'В аренде' : 'Аренда')
                                       : 'Нет в наличии',
                                   style: const TextStyle(
                                     color: Colors.white,

@@ -34,6 +34,12 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<BookCubit>().fetchBooks();
+            },
+            icon: const Icon(Icons.arrow_back)),
         title: const Text('Профиль'),
         centerTitle: true,
       ),
@@ -86,49 +92,90 @@ class _ProfilePageState extends State<ProfilePage> {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 final book = state.books[index];
-                                return ListTile(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                                return Dismissible(
+                                  key: Key(book.id!), // Уникалдуу идентификатор
+                                  background: Container(
+                                    color: Colors.red,
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: const Icon(Icons.delete,
+                                        color: Colors.white),
                                   ),
-                                  tileColor: Colors.grey[200],
-                                  contentPadding: const EdgeInsets.all(10),
-                                  leading: Stack(
-                                    children: [
-                                      const CircleAvatar(
-                                        radius: 25,
-                                        backgroundImage: AssetImage(
-                                            'assets/images/library.png'), // Replace with dynamic image
-                                      ),
-                                      SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: DecoratedBox(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.circular(6)),
-                                              child: Center(
-                                                  child:
-                                                      Text('${index + 1}')))),
-                                    ],
-                                  ),
-                                  title: Text(book.title,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 17)),
-                                  subtitle: Text(
-                                    "Автор: ${book.author}",
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                  trailing: TextButton(
-                                    onPressed: () {
-                                      final userId = FirebaseAuth
-                                          .instance.currentUser!.uid;
-                                      context
-                                          .read<BookCubit>()
-                                          .returnBook(book.id!, userId);
-                                    },
-                                    child: const Text('Возврат'),
+                                  onDismissed: (direction) {
+                                    final userId =
+                                        FirebaseAuth.instance.currentUser!.uid;
+                                    context
+                                        .read<BookCubit>()
+                                        .returnBook(book.id!, userId);
+
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content:
+                                              Text('${book.title} удален!')),
+                                    );
+                                  },
+                                  child: ListTile(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    tileColor: Colors.grey[200],
+                                    contentPadding: const EdgeInsets.all(10),
+                                    leading: Stack(
+                                      children: [
+                                        const CircleAvatar(
+                                          radius: 25,
+                                          backgroundImage: AssetImage(
+                                              'assets/images/library.png'), // Replace with dynamic image
+                                        ),
+                                        SizedBox(
+                                            height: 20,
+                                            width: 20,
+                                            child: DecoratedBox(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            6)),
+                                                child: Center(
+                                                    child:
+                                                        Text('${index + 1}')))),
+                                      ],
+                                    ),
+                                    title: Text(book.title,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15)),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text("Автор: ${book.author}",
+                                            style:
+                                                const TextStyle(fontSize: 15)),
+                                        Text(
+                                            "Арендован: ${book.rentedDate != null ? book.rentedDate!.toDate().toString() : 'N/A'}",
+                                            style:
+                                                const TextStyle(fontSize: 12)),
+                                        Text(
+                                            "Возврат: ${book.returnDate != null ? book.returnDate!.toDate().toString() : 'N/A'}",
+                                            style:
+                                                const TextStyle(fontSize: 12)),
+                                        Text("Статус: ${book.status}",
+                                            style:
+                                                const TextStyle(fontSize: 12)),
+                                      ],
+                                    ),
+                                    trailing: TextButton(
+                                      onPressed: () {
+                                        final userId = FirebaseAuth
+                                            .instance.currentUser!.uid;
+                                        context
+                                            .read<BookCubit>()
+                                            .returnBook(book.id!, userId);
+                                      },
+                                      child: const Text('Возврат'),
+                                    ),
                                   ),
                                 );
                               },
