@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:library_project/features/auth/domain/entities/user_entinty.dart';
 import 'package:library_project/features/auth/domain/usecases/login_usecase.dart';
-import 'package:library_project/features/auth/domain/usecases/profile_usecase.dart';
 import 'package:library_project/features/auth/domain/usecases/register_usecase.dart';
 
 part 'auth_state.dart';
@@ -10,9 +9,7 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final LoginUsecase loginUsecase;
   final RegisterUsecase registerUsecase;
-  final GetUserProfileUseCase getUserProfileUseCase;
-  AuthCubit(this.getUserProfileUseCase, this.loginUsecase, this.registerUsecase)
-      : super(AuthInitial());
+  AuthCubit(this.loginUsecase, this.registerUsecase) : super(AuthInitial());
 
   //////////////  register logic
   Future<void> register(String email, String password, String username) async {
@@ -31,17 +28,6 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthLoading());
       final user = await loginUsecase.call(email, password);
-      emit(AuthSuccess(userEntity: user));
-    } catch (e) {
-      emit(const AuthError(messege: 'Some error occurred.'));
-    }
-  }
-
-////////////  get user profile
-  Future<void> getUserProfile() async {
-    try {
-      emit(AuthLoading());
-      final user = await getUserProfileUseCase.call();
       emit(AuthSuccess(userEntity: user));
     } catch (e) {
       emit(const AuthError(messege: 'Some error occurred.'));

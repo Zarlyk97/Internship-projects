@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:library_project/features/auth/presentation/cubit/auth_cubit.dart';
 
 import 'package:library_project/features/auth/presentation/pages/sign_in_page.dart';
-import 'package:library_project/features/library_management/presentation/pages/home_page.dart';
+import 'package:library_project/features/book_management/presentation/pages/home_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
