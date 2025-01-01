@@ -15,23 +15,21 @@ class GetRentedbookUsecase {
           .collection('rented_Books')
           .get();
 
-      ///////////////////   Аренда болгон китептерди алуу
       if (rentedBooksSnapshot.docs.isEmpty) {
-        return []; ///////////////////   Китеп жок болсо бош тизме кайтаруу
+        return []; ///////
       }
+      final bookIds =
+          rentedBooksSnapshot.docs.map((doc) => doc['book_id']).toList();
 
-      final books = <BookModel>[];
-      for (var rentedBookDoc in rentedBooksSnapshot.docs) {
-        final bookId = rentedBookDoc['book_id'];
-        final bookSnapshot = await FirebaseFirestore.instance
-            .collection('books')
-            .doc(bookId)
-            .get();
+      final booksSnapshot = await Future.wait(
+        bookIds.map((bookId) =>
+            FirebaseFirestore.instance.collection('books').doc(bookId).get()),
+      );
 
-        if (bookSnapshot.exists) {
-          books.add(BookModel.fromMap(bookSnapshot.data()!, bookSnapshot.id));
-        }
-      }
+      final books = booksSnapshot
+          .where((snapshot) => snapshot.exists) // Бар болсо гана кошуңуз
+          .map((snapshot) => BookModel.fromMap(snapshot.data()!, snapshot.id))
+          .toList();
 
       return books;
     } catch (e) {

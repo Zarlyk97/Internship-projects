@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
             const EdgeInsets.only(top: 10, bottom: 10, left: 16, right: 16),
         child: RefreshIndicator(
           onRefresh: () async {
-            await context.read<BookCubit>().fetchBooks();
+            context.read<BookCubit>().fetchBooks();
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

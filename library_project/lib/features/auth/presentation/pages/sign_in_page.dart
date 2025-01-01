@@ -50,7 +50,7 @@ class _SignInPageState extends State<SignInPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 40),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _registerText(),
                   const SizedBox(

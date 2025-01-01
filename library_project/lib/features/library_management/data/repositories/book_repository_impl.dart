@@ -45,12 +45,26 @@ class BookRepositoryImpl implements BookRepository {
   }
 
   @override
+  @override
   Future<void> addRentedBook(String bookId, String userId) async {
     try {
       final bookDoc = await firestore.collection('books').doc(bookId).get();
       if (!bookDoc.exists) {
         throw Exception('Book not found');
       }
+
+      // Колдонуучунун арендадагы китептерин текшерүү
+      final rentedBooksRef = firestore
+          .collection('users')
+          .doc(userId)
+          .collection('rented_Books')
+          .where('book_id', isEqualTo: bookId);
+
+      final rentedBooksSnapshot = await rentedBooksRef.get();
+      if (rentedBooksSnapshot.docs.isNotEmpty) {
+        throw Exception('Book is already rented by this user.');
+      }
+
       await firestore
           .collection('users')
           .doc(userId)
@@ -61,6 +75,7 @@ class BookRepositoryImpl implements BookRepository {
         'return_date':
             Timestamp.fromDate(DateTime.now().add(const Duration(days: 7))),
         'status': 'active',
+        'isRented': true,
       });
     } catch (e) {
       throw Exception('Failed to add rented book: $e');
@@ -82,6 +97,7 @@ class BookRepositoryImpl implements BookRepository {
             'rented_date': doc['rented_date'],
             'return_date': doc['return_date'],
             'status': doc['status'],
+            'isRented': doc['isRented'],
           });
         }
       }
