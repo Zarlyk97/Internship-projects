@@ -39,11 +39,7 @@ Future<void> init() async {
       () => GetUserProfileUseCase(sl<ProfileRepository>()));
 
   ///////////// Rental
-  sl.registerFactory(() => RentalManagementCubit(
-        sl(),
-        sl(),
-        sl(),
-      ));
+  sl.registerFactory(() => RentalManagementCubit(sl(), sl(), sl()));
   sl.registerLazySingleton<RentalRepository>(
       () => RentedRepositoryImpl(firestore: sl()));
 
