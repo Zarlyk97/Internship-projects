@@ -12,7 +12,7 @@ class ProfileInitial extends ProfileState {}
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final User user;
+  final UserEntity user;
 
   const ProfileLoaded({required this.user});
 }

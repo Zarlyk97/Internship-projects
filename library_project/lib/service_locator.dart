@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
+import 'package:library_project/features/admin/data/datasources/admin_remote_data_source.dart';
+import 'package:library_project/features/admin/data/repositories/admin_repo_impl.dart';
+import 'package:library_project/features/admin/presentation/cubit/admin_cubit.dart';
 import 'package:library_project/features/auth/data/repositories/firebase_auth_repository.dart';
 import 'package:library_project/features/auth/domain/usecases/login_usecase.dart';
 import 'package:library_project/features/profile_management/data/repositories/get_user_repository.dart';
@@ -19,6 +22,7 @@ import 'package:library_project/features/book_management/presentation/cubit/book
 import 'package:library_project/features/profile_management/presentation/cubit/profile_cubit.dart';
 import 'package:library_project/features/rental_management/presentation/cubit/rental_management_cubit.dart';
 
+import 'features/admin/domain/repositories/admin_repo.dart';
 import 'features/auth/domain/repositories/auth_repository.dart';
 
 final sl = GetIt.instance;
@@ -31,6 +35,7 @@ Future<void> init() async {
       () => FirebaseAuthRepository(firebaseAuth: sl(), firestore: sl()));
   sl.registerLazySingleton(() => LoginUsecase(sl<AuthRepository>()));
   sl.registerLazySingleton(() => RegisterUsecase(sl<AuthRepository>()));
+
   ////////////////// Profile
   sl.registerFactory(() => ProfileCubit(sl()));
   sl.registerLazySingleton<ProfileRepository>(
@@ -55,4 +60,13 @@ Future<void> init() async {
       () => BookRepositoryImpl(firestore: sl()));
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
   sl.registerLazySingleton(() => FetchBookUsecase(sl()));
+////////admin
+  sl.registerFactory(() => AdminCubit(
+        sl<AdminRepository>(),
+      ));
+
+  // Home Page Dependencies
+  sl.registerFactory<AdminRemoteDataSource>(() => AdminRemoteDataSourceimpl());
+  sl.registerFactory<AdminRepository>(() =>
+      AdminRepositoryImpl(adminRemoteDataSource: sl<AdminRemoteDataSource>()));
 }

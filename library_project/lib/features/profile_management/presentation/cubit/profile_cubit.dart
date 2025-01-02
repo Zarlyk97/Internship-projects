@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:library_project/features/auth/domain/entities/user_entinty.dart';
+import 'package:library_project/features/auth/domain/entities/user_entity.dart';
 import 'package:library_project/features/profile_management/domain/usecases/profile_usecase.dart';
 
 part 'profile_state.dart';

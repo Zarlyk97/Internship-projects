@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:library_project/features/admin/presentation/cubit/admin_cubit.dart';
 import 'package:library_project/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:library_project/features/book_management/presentation/cubit/book_cubit.dart';
 import 'package:library_project/features/book_management/presentation/pages/splash_screen.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<ProfileCubit>(create: (context) => sl<ProfileCubit>()),
         BlocProvider<RentalManagementCubit>(
             create: (context) => sl<RentalManagementCubit>()),
+        BlocProvider<AdminCubit>(create: (context) => sl<AdminCubit>())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

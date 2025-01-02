@@ -1,5 +1,5 @@
-import 'package:library_project/features/auth/domain/entities/user_entinty.dart';
+import 'package:library_project/features/auth/domain/entities/user_entity.dart';
 
 abstract class ProfileRepository {
-  Future<User> getUserProfile();
+  Future<UserEntity> getUserProfile();
 }

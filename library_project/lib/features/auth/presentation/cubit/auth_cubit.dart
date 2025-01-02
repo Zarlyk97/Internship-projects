@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:library_project/features/auth/domain/entities/user_entinty.dart';
+import 'package:library_project/features/auth/domain/entities/user_entity.dart';
 import 'package:library_project/features/auth/domain/usecases/login_usecase.dart';
 import 'package:library_project/features/auth/domain/usecases/register_usecase.dart';
 

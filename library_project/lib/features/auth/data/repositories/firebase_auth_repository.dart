@@ -2,7 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
-import 'package:library_project/features/auth/domain/entities/user_entinty.dart';
+import 'package:library_project/features/auth/domain/entities/user_entity.dart';
 import 'package:library_project/features/auth/domain/repositories/auth_repository.dart';
 
 class FirebaseAuthRepository implements AuthRepository {
@@ -14,14 +14,11 @@ class FirebaseAuthRepository implements AuthRepository {
     required this.firestore,
   });
   @override
-  Future<User> login(
-    String email,
-    String password,
-  ) async {
+  Future<UserEntity> login(String email, String password) async {
     try {
       final credential = await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      return User(
+      return UserEntity(
         id: credential.user!.uid,
         email: credential.user!.email!,
       );
@@ -31,7 +28,8 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<User> register(String email, String password, String userName) async {
+  Future<UserEntity> register(
+      String email, String password, String userName) async {
     try {
       final credetial = await firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -43,7 +41,7 @@ class FirebaseAuthRepository implements AuthRepository {
         'userName': userName,
         'createdAt': Timestamp.now()
       });
-      return User(
+      return UserEntity(
         id: credetial.user!.uid,
         email: credetial.user!.email!,
       );

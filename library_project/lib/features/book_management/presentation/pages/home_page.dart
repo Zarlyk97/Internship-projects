@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:library_project/features/admin/presentation/pages/admin_screen.dart';
 import 'package:library_project/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:library_project/features/book_management/data/models/book_model.dart';
 import 'package:library_project/features/book_management/data/models/images_model.dart';
@@ -191,10 +192,10 @@ class _HomePageState extends State<HomePage> {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => DetailPage(
-                      images: images,
-                      book: book,
-                    ),
+                    builder: (context) => AdminScreen(
+                        // images: images,
+                        // book: book,
+                        ),
                   ),
                 ),
                 child: SizedBox(
