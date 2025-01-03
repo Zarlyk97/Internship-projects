@@ -2,9 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:library_project/features/admin/presentation/cubit/admin_cubit.dart';
+import 'package:library_project/features/admin/presentation/pages/admin_or_user_page.dart';
 import 'package:library_project/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:library_project/features/book_management/presentation/cubit/book_cubit.dart';
-import 'package:library_project/features/book_management/presentation/pages/splash_screen.dart';
 import 'package:library_project/features/profile_management/presentation/cubit/profile_cubit.dart';
 import 'package:library_project/features/rental_management/presentation/cubit/rental_management_cubit.dart';
 import 'package:library_project/firebase_options.dart';
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const SplashScreen(),
+        home: const AdminOrUserPage(),
       ),
     );
   }
