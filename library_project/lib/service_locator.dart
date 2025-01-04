@@ -52,10 +52,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetRentedbookUsecase(sl()));
 
 ///////////////// Book
-  sl.registerFactory(() => BookCubit(
-        sl(),
-        sl(),
-      ));
+  sl.registerFactory(() => BookCubit(sl(), sl()));
   sl.registerLazySingleton<BookRepository>(
       () => BookRepositoryImpl(firestore: sl()));
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);

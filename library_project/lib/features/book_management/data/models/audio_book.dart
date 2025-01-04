@@ -2,7 +2,7 @@ import 'package:library_project/features/book_management/domain/entities/book_mo
 
 class AudioBook extends Book {
   final double duration; // Hours
-  final String narrator;
+  final String narrator; // рассказчик
 
   AudioBook({
     required super.id,

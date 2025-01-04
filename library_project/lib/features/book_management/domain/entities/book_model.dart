@@ -14,8 +14,4 @@ class Book {
   final String genre;
   int copies;
   bool isRented;
-
-  DateTime get rentalStartDate => DateTime.now();
-
-  DateTime get rentalEndDate => rentalStartDate.add(const Duration(days: 7));
 }
