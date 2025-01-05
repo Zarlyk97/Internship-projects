@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:library_project/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:library_project/features/auth/presentation/pages/sign_up_page.dart';
-import 'package:library_project/features/book_management/presentation/pages/home_page.dart';
+import 'package:library_project/features/book_management/presentation/pages/books_page.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -38,7 +38,7 @@ class _SignInPageState extends State<SignInPage> {
           } else if (state is AuthSuccess) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
+              MaterialPageRoute(builder: (context) => const BooksPage()),
             );
           }
         },

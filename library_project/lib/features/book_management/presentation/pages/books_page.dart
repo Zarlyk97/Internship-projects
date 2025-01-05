@@ -1,22 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:library_project/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:library_project/features/book_management/data/models/book_model.dart';
 import 'package:library_project/features/book_management/data/models/images_model.dart';
 import 'package:library_project/features/book_management/presentation/cubit/book_cubit.dart';
 import 'package:library_project/features/book_management/presentation/cubit/book_state.dart';
 import 'package:library_project/features/book_management/presentation/pages/detail_page.dart';
-import 'package:library_project/features/profile_management/presentation/pages/profile_page.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class BooksPage extends StatefulWidget {
+  const BooksPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<BooksPage> createState() => _BooksPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _BooksPageState extends State<BooksPage> {
   int _currentIndex = 0;
   List<BookModel> books = [];
 
@@ -37,19 +35,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.logout,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            FirebaseAuth.instance.signOut();
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const SignInPage()),
-            );
-          },
-        ),
         title: const Text(
           'Библиотека',
           style: TextStyle(
@@ -58,27 +43,6 @@ class _HomePageState extends State<HomePage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: [
-          CircleAvatar(
-            backgroundColor: Colors.grey[350],
-            radius: 20,
-            child: IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                        userId: FirebaseAuth.instance.currentUser!.uid),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.person),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          )
-        ],
         centerTitle: true,
       ),
       body: Padding(
@@ -289,28 +253,16 @@ class _HomePageState extends State<HomePage> {
                                           context
                                               .read<BookCubit>()
                                               .rentBook(book.id!, userId);
+                                          if (context.read<BookCubit>().state
+                                                  is BookStateLoading ||
+                                              context.read<BookCubit>().state
+                                                  is BookStateFailure) {
+                                            showModalBottom(context, book,
+                                                'Вы успешно арендовали книгу');
+                                          }
                                         } else {
-                                          showModalBottomSheet(
-                                              context: context,
-                                              builder: (context) => SizedBox(
-                                                    width: double.infinity,
-                                                    height: 60,
-                                                    child: DecoratedBox(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .vertical(
-                                                          top: Radius.circular(
-                                                              20),
-                                                        ),
-                                                        color: Colors.grey[300],
-                                                      ),
-                                                      child: Center(
-                                                        child: Text(
-                                                            'Вы уже арендовали книгу ${book.title}'),
-                                                      ),
-                                                    ),
-                                                  ));
+                                          showModalBottom(context, book,
+                                              'Вы уже арендовали книгу');
                                         }
                                       }
                                     : null,
@@ -338,5 +290,26 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  Future<dynamic> showModalBottom(
+      BuildContext context, BookModel book, String text) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) => SizedBox(
+              width: double.infinity,
+              height: 100,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                  color: Colors.grey[300],
+                ),
+                child: Center(
+                  child: Text('$text ${book.title}'),
+                ),
+              ),
+            ));
   }
 }

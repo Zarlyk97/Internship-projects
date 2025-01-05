@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:library_project/features/auth/presentation/pages/sign_in_page.dart';
-import 'package:library_project/features/book_management/presentation/pages/home_page.dart';
+import 'package:library_project/features/book_management/presentation/pages/main/main_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()));
+          MaterialPageRoute(builder: (context) => const MainPage()));
     } else {
       Navigator.pushReplacement(
           // ignore: use_build_context_synchronously

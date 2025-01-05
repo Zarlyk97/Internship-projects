@@ -3,8 +3,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:library_project/features/auth/presentation/pages/sign_in_page.dart';
 
-import 'package:library_project/features/book_management/presentation/cubit/book_cubit.dart';
 import 'package:library_project/features/profile_management/presentation/cubit/profile_cubit.dart';
 import 'package:library_project/features/rental_management/presentation/cubit/rental_management_cubit.dart';
 
@@ -34,14 +34,26 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-              context.read<BookCubit>().fetchBooks();
-            },
-            icon: const Icon(Icons.arrow_back)),
-        title: const Text('Профиль'),
+        title: const Text(
+          'Профиль',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+        ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SignInPage()),
+              );
+            },
+          ),
+        ],
       ),
       body: BlocBuilder<ProfileCubit, ProfileState>(
         builder: (context, profileState) {
@@ -52,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   bookState is RentalManagementLoading;
 
               return Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
                 child: RefreshIndicator(
                   onRefresh: () async {
                     context.read<ProfileCubit>().getUserProfile();
@@ -76,18 +88,45 @@ class _ProfilePageState extends State<ProfilePage> {
     } else if (profileState is ProfileLoaded) {
       return Column(
         children: [
-          Center(
-            child: Text(
-              profileState.user.userName ?? 'UserName',
-              style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+          Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height / 4.3,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: const BorderRadius.only(
+                bottomRight: Radius.circular(50),
+                bottomLeft: Radius.circular(50),
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 30,
+                  child: Icon(
+                    Icons.person,
+                    size: 30,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    profileState.user.userName ?? 'UserName',
+                    style: const TextStyle(
+                        fontSize: 25, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  profileState.user.email,
+                  style: const TextStyle(fontSize: 15),
+                ),
+                const SizedBox(height: 20),
+              ],
             ),
           ),
-          const SizedBox(height: 10),
-          Text(
-            profileState.user.email,
-            style: const TextStyle(fontSize: 15),
-          ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           Expanded(
             child: _buildBookList(bookState),
           ),
@@ -129,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
             },
             child: ListTile(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
               ),
               tileColor: Colors.grey[200],
               contentPadding: const EdgeInsets.all(10),
