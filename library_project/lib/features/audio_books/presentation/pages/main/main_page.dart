@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:library_project/features/book_management/presentation/pages/books_page.dart';
-import 'package:library_project/features/book_management/presentation/pages/home/home_page.dart';
+import 'package:library_project/features/audio_books/presentation/pages/home/home_page.dart';
 import 'package:library_project/features/profile_management/presentation/pages/profile_page.dart';
 
 class MainPage extends StatefulWidget {

@@ -247,22 +247,23 @@ class _BooksPageState extends State<BooksPage> {
                                 ),
                                 onPressed: book.copies > 0
                                     ? () {
-                                        final userId = FirebaseAuth
-                                            .instance.currentUser!.uid;
+                                        final currentUser =
+                                            FirebaseAuth.instance.currentUser;
+                                        if (currentUser == null) {
+                                          showModalBottom(context, book,
+                                              ' Пожалуйста, войдите в аккаунт.');
+                                          return;
+                                        }
+
+                                        final userId = currentUser.uid;
+
                                         if (!book.isRented) {
                                           context
                                               .read<BookCubit>()
                                               .rentBook(book.id!, userId);
-                                          if (context.read<BookCubit>().state
-                                                  is BookStateLoading ||
-                                              context.read<BookCubit>().state
-                                                  is BookStateFailure) {
-                                            showModalBottom(context, book,
-                                                'Вы успешно арендовали книгу');
-                                          }
                                         } else {
                                           showModalBottom(context, book,
-                                              'Вы уже арендовали книгу');
+                                              'Вы уже арендовали книгу ${book.title}.');
                                         }
                                       }
                                     : null,
@@ -307,7 +308,10 @@ class _BooksPageState extends State<BooksPage> {
                   color: Colors.grey[300],
                 ),
                 child: Center(
-                  child: Text('$text ${book.title}'),
+                  child: Text(
+                    '$text ${book.title}',
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ));
