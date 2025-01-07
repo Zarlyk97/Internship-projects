@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:library_project/features/admin/presentation/pages/admin_screen.dart';
-import 'package:library_project/features/book_management/presentation/pages/splash_screen.dart';
+import 'package:library_project/features/audio_books/presentation/pages/main/splash_screen.dart';
 
 class AdminOrUserPage extends StatelessWidget {
   const AdminOrUserPage({super.key});

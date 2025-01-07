@@ -172,25 +172,18 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               tileColor: Colors.grey[200],
               contentPadding: const EdgeInsets.all(10),
-              leading: Stack(
-                children: [
-                  const CircleAvatar(
-                    radius: 25,
-                    backgroundImage: AssetImage(
-                        'assets/images/library.png'), // Replace with dynamic image
+              leading: const SizedBox(
+                height: 90,
+                width: 70,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                          'assets/images/library.png',
+                        ),
+                        fit: BoxFit.cover),
                   ),
-                  SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Center(child: Text('${index + 1}')),
-                    ),
-                  ),
-                ],
+                ),
               ),
               title: Text(book.title,
                   style: const TextStyle(
