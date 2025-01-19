@@ -5,7 +5,7 @@ abstract interface class AdminRemoteDataSource {
   Future<void> addBooks(AdminEntity books);
 }
 
-class AdminRemoteDataSourceimpl implements AdminRemoteDataSource {
+class AdminRemoteDataSourceimpl extends AdminRemoteDataSource {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   @override
   Future<void> addBooks(AdminEntity books) async {
